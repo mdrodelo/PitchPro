@@ -8,6 +8,7 @@ pip3 install gpxpy
 import gpxpy
 import gpxpy.gpx
 import xml.etree.ElementTree as ET
+import pandas as pd
 
 """
 This function parses a .GPX file to extract the relevant data points: 
@@ -26,6 +27,7 @@ def parse_gpx_data(gpxFile):
     data_points = []
     total_distance = None
     average_speed = None
+
 
     for track in gpx.tracks:
         for segment in track.segments:
@@ -53,7 +55,9 @@ def parse_gpx_data(gpxFile):
         if avgspeed_elem is not None:
             average_speed = float(avgspeed_elem.text)
 
-    return data_points, average_speed, total_distance
+    df=pd.DataFrame(data_points)
+
+    return data_points, average_speed, total_distance, df
 
 
 def parseExtensions(extensions):
