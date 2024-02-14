@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config  # to read the .env file with our database credentials
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -78,12 +79,18 @@ WSGI_APPLICATION = 'PitchPro.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# to avoid hardcoding sensitive information, I used the .env file and 'decouple' library
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD'),
+        'HOST': config('DATABASE_HOST', default='localhost'),
+        'PORT': config('DATABASE_PORT', default='5432'),
     }
 }
+
 
 
 # Password validation
