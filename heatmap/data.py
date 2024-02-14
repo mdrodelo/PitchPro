@@ -71,8 +71,10 @@ def parseExtensions(extensions):
     return extensionDictionary
 
 gpx_file_path = '../sample_data/data1.gpx'
-dataPoints, averageSpeed, distance = parse_gpx_data(gpx_file_path)
+dataPoints, averageSpeed, distance, df = parse_gpx_data(gpx_file_path)
 
 print(f"Data Points: {dataPoints}")
 print(f"Average Speed: {averageSpeed} m/s")  # Assuming the speed is in meters per second
 print(f"Distance: {distance} meters")  # Assuming the distance is in meters
+
+print(df)
