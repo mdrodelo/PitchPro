@@ -5,10 +5,19 @@ pip install gpxpy
 or if you are using python3.xx (you can find out by typing "python --version" in the command line), use the command:
 pip3 install gpxpy
 """
+import os
+import django
 import gpxpy
 import gpxpy.gpx
 import xml.etree.ElementTree as ET
 import pandas as pd
+
+# Set up the Django environment
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'PitchPro.settings')
+django.setup()
+
+from heatmap.models import PlayerMovement
+from django.db import transaction
 
 """
 This function parses a .GPX file to extract the relevant data points: 
@@ -78,3 +87,32 @@ print(f"Average Speed: {averageSpeed} m/s")  # Assuming the speed is in meters p
 print(f"Distance: {distance} meters")  # Assuming the distance is in meters
 
 print(df)
+
+
+
+
+
+
+
+
+# looping through the df and for each row, creating a new PlayerMovement instance with the data from that row
+player_movements = [
+    PlayerMovement(
+        session_date=row['SessionDate'],
+        timestamp=row['Timestamp'],
+        latitude=row['Latitude'],
+        longitude=row['Longitude'],
+        heart_rate=row['Heart Rate'] if not pd.isna(row['Heart Rate']) else None
+    )
+    for index, row in df.iterrows()
+]
+
+# using Django's 'bulk_create' to insert data efficiently
+with transaction.atomic():     # using a transaction to ensure data integrity
+    PlayerMovement.objects.bulk_create(player_movements)
+
+
+
+# # printing the database to make sure the data went thru
+# movements = PlayerMovement.objects.all() # add '[:10]' at the end of this line to just see the first 10 entries
+# print(movements)
