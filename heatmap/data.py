@@ -37,7 +37,6 @@ def parse_gpx_data(gpxFile):
     total_distance = None
     average_speed = None
 
-
     for track in gpx.tracks:
         for segment in track.segments:
             for point in segment.points:
@@ -64,7 +63,7 @@ def parse_gpx_data(gpxFile):
         if avgspeed_elem is not None:
             average_speed = float(avgspeed_elem.text)
 
-    df=pd.DataFrame(data_points)
+    df = pd.DataFrame(data_points)
 
     return data_points, average_speed, total_distance, df
 
@@ -79,6 +78,7 @@ def parseExtensions(extensions):
             extensionDictionary['Heart Rate'] = node.text
     return extensionDictionary
 
+
 gpx_file_path = '../sample_data/data1.gpx'
 dataPoints, averageSpeed, distance, df = parse_gpx_data(gpx_file_path)
 
@@ -88,6 +88,7 @@ print(f"Distance: {distance} meters")  # Assuming the distance is in meters
 
 print(df)
 
+df1 = df
 
 # looping through the df and for each row, creating a new PlayerMovement instance with the data from that row
 player_movements = [
@@ -102,9 +103,8 @@ player_movements = [
 ]
 
 # using Django's 'bulk_create' to insert data efficiently
-with transaction.atomic():     # using a transaction to ensure data integrity
+with transaction.atomic():  # using a transaction to ensure data integrity
     PlayerMovement.objects.bulk_create(player_movements)
-
 
 
 # # printing the database to make sure the data went thru
@@ -113,13 +113,17 @@ with transaction.atomic():     # using a transaction to ensure data integrity
 
 
 def lat_lon_adjust(df):
-    latmin=df['latitude'].min()
-    lonmin=df['longitude'].min()
+    latmin = df['latitude'].min()
+    lonmin = df['longitude'].min()
 
-    df['latitude']=df['latitude'].div(latmin)
+    df['latitude'] = df['latitude'].div(latmin)
     df['longitude'] = df['longitude'].div(lonmin)
 
-    df['latitude'] = df['latitude'].multiply(latmin)
-    df['longitude'] = df['longitude'].multiply(lonmin)
+    df['latitude'] = df['latitude'].multiply(latmin / 2)
+    df['longitude'] = df['longitude'].multiply(lonmin / 2)
 
     return df
+
+
+lat_lon_adjust(df1)
+print(df1)
