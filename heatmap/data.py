@@ -113,14 +113,14 @@ with transaction.atomic():  # using a transaction to ensure data integrity
 
 
 def lat_lon_adjust(df):
-    latmin = df['latitude'].min()
-    lonmin = df['longitude'].min()
+    latmin = df['Latitude'].min()
+    lonmin = df['Longitude'].min()
 
-    df['latitude'] = df['latitude'].div(latmin)
-    df['longitude'] = df['longitude'].div(lonmin)
+    df['Latitude'] = df['Latitude'].div(latmin)
+    df['Longitude'] = df['Longitude'].div(lonmin)
 
-    df['latitude'] = df['latitude'].multiply(latmin / 2)
-    df['longitude'] = df['longitude'].multiply(lonmin / 2)
+    df['Latitude'] = df['Latitude'].multiply(latmin / 2)
+    df['Longitude'] = df['Longitude'].multiply(lonmin / 2)
 
     return df
 
