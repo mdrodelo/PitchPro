@@ -89,12 +89,6 @@ print(f"Distance: {distance} meters")  # Assuming the distance is in meters
 print(df)
 
 
-
-
-
-
-
-
 # looping through the df and for each row, creating a new PlayerMovement instance with the data from that row
 player_movements = [
     PlayerMovement(
@@ -116,3 +110,16 @@ with transaction.atomic():     # using a transaction to ensure data integrity
 # # printing the database to make sure the data went thru
 # movements = PlayerMovement.objects.all() # add '[:10]' at the end of this line to just see the first 10 entries
 # print(movements)
+
+
+def lat_lon_adjust(df):
+    latmin=df['latitude'].min()
+    lonmin=df['longitude'].min()
+
+    df['latitude']=df['latitude'].div(latmin)
+    df['longitude'] = df['longitude'].div(lonmin)
+
+    df['latitude'] = df['latitude'].multiply(latmin)
+    df['longitude'] = df['longitude'].multiply(lonmin)
+
+    return df
