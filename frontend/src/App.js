@@ -1,5 +1,6 @@
 import React from 'react';
 import logo from './logo.svg';
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import Home from './components/Home';
 import About from './components/About';
@@ -7,7 +8,9 @@ import Instructions from './components/Instructions';
 import MyData from './components/MyData';
 import Login from './components/Login';
 import AccountCreation from "./components/AccountCreation";
+import Heatmap from "./components/Heatmap";
 import './App.css';
+import axios from 'axios';
 
 function App() {
   return (
@@ -34,6 +37,7 @@ function App() {
         <Route path="/login" component={Login} />
         <Route path="/account-creation" component={AccountCreation} />
         <Route path="/" exact component={Home} />
+        <Route path="/heatmap" component={Heatmap} />
       </div>
     </Router>
   );

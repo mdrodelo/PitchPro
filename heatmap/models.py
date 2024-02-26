@@ -1,9 +1,12 @@
 # Create your models here.
 from django.db import models
+from user_api.models import AppUser
 import pandas as pd
+
 
 # creating PlayerMovements data table
 class PlayerMovement(models.Model):
+    user_id = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='+'),
     movement_id = models.BigAutoField(primary_key=True)  # MovementID as a primary key
     session_date = models.DateField()  # SessionDate
     timestamp = models.TimeField()  # Timestamp

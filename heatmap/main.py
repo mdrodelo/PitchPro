@@ -1,17 +1,27 @@
 from mplsoccer import Pitch
 import matplotlib.pyplot as plt
-
-from mplsoccer import Pitch
+import io
+import base64
+from mplsoccer import Pitch, Sbopen
 import matplotlib.pyplot as plt
 
 pitch = Pitch(pitch_color='grass', line_color='white', stripe=True)
 # specifying figure size (width, height)
 fig, ax = pitch.draw(figsize=(10, 5))
-plt.show()
+# plt.show()
 
 
-
-
+def TestHeatmap():
+    parser = Sbopen()
+    df_false9 = parser.event(69249)[0]
+    df_false9 = df_false9.loc[df_false9.player_id == 5503, ['x', 'y']]
+    test_pitch = Pitch(pitch_color='grass', line_color='white', stripe=True)
+    test_fig, testax = test_pitch.draw(figsize=(10, 5))
+    kde = test_pitch.kdeplot(df_false9.x, df_false9.y, ax=testax)
+    buf = io.BytesIO()
+    test_fig.savefig(buf, format='png')
+    buf.seek(0)
+    return buf.read()
 
 
 import gpxpy
