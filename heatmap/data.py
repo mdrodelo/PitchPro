@@ -82,14 +82,43 @@ def parseExtensions(extensions):
 gpx_file_path = '../sample_data/data1.gpx'
 dataPoints, averageSpeed, distance, df = parse_gpx_data(gpx_file_path)
 
-print(f"Data Points: {dataPoints}")
-print(f"Average Speed: {averageSpeed} m/s")  # Assuming the speed is in meters per second
-print(f"Distance: {distance} meters")  # Assuming the distance is in meters
+##print(f"Data Points: {dataPoints}")
+##print(f"Average Speed: {averageSpeed} m/s")  # Assuming the speed is in meters per second
+##print(f"Distance: {distance} meters")  # Assuming the distance is in meters
 
 print(df)
-
+print('hi')
 df1 = df
+print(df1)
 
+def lat_lon_adjust(df):
+    latmin = df['Latitude'].min()
+    ##print(latmin)
+    lonmin = df['Longitude'].min()
+    ##print(lonmin)
+    latscalar = latmin*100
+    ##print(latscalar/-1)
+    lonscalar = lonmin*100
+    if (latscalar / -1) > 0:
+        latscalar = latscalar / -1
+
+    if (lonscalar / -1) > 0:
+        lonscalar = lonscalar / -1
+    ##print(latscalar)
+    for index, row in df.iterrows():
+
+        df.at[index,'Latitude'] = df.at[index,'Latitude']-latmin
+        df.at[index,'Longitude'] = df.at[index,'Longitude']-lonmin
+
+
+        df.at[index,'Latitude'] = df.at[index,'Latitude']*(latscalar)
+        df.at[index,'Longitude'] = df.at[index,'Longitude']*(lonscalar)
+
+    return df
+
+
+lat_lon_adjust(df1)
+print(df1)
 # looping through the df and for each row, creating a new PlayerMovement instance with the data from that row
 player_movements = [
     PlayerMovement(
@@ -112,18 +141,4 @@ with transaction.atomic():  # using a transaction to ensure data integrity
 # print(movements)
 
 
-def lat_lon_adjust(df):
-    latmin = df['Latitude'].min()
-    lonmin = df['Longitude'].min()
 
-    df['Latitude'] = df['Latitude'].div(latmin)
-    df['Longitude'] = df['Longitude'].div(lonmin)
-
-    df['Latitude'] = df['Latitude'].multiply(latmin / 2)
-    df['Longitude'] = df['Longitude'].multiply(lonmin / 2)
-
-    return df
-
-
-lat_lon_adjust(df1)
-print(df1)
