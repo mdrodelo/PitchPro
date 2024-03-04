@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import './AccountCreation.css'; // Import your CSS file
 
 const AccountCreation = ({ history }) => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [username, setUsername] = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
 
@@ -15,8 +14,7 @@ const AccountCreation = ({ history }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          first_name: firstName,
-          last_name: lastName,
+          username: username,
           email: newEmail,
           password: newPassword,
         }),
@@ -34,8 +32,7 @@ const AccountCreation = ({ history }) => {
       }
 
       // Clear input fields regardless of success or failure
-      setFirstName('');
-      setLastName('');
+      setUsername('');
       setNewEmail('');
       setNewPassword('');
     } catch (error) {
@@ -47,25 +44,14 @@ const AccountCreation = ({ history }) => {
     <div className="account-creation-container">
       <h2>Create a New Account</h2>
       <form>
-        <div className="row">
-          <div className="label-input">
-            <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              placeholder="Enter first name"
-              className="input-field"
-            />
-          </div>
-          <div className="label-input">
-            <input
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              placeholder="Enter last name"
-              className="input-field"
-            />
-          </div>
+        <div className="label-input">
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter username"
+            className="input-field"
+          />
         </div>
         <div className="label-input">
           <input
