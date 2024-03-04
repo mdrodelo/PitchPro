@@ -1,21 +1,9 @@
 # Create your models here.
 from django.db import models
+from user_api.models import User
 import pandas as pd
-def lat_lon_adjust(df):
-    latmin=df['latitude'].min()
-    lonmin=df['longitude'].min()
-
-    df['latitude']=df['latitude'].div(latmin)
-    df['longitude'] = df['longitude'].div(lonmin)
-
-    df['latitude'] = df['latitude'].multiply(latmin)
-    df['longitude'] = df['longitude'].multiply(lonmin)
-
-    return df
-
-
-# creating PlayerMovements data table
 class PlayerMovement(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='+'),
     movement_id = models.BigAutoField(primary_key=True)  # MovementID as a primary key
     session_date = models.DateField()  # SessionDate
     timestamp = models.TimeField()  # Timestamp

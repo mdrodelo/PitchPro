@@ -7,14 +7,38 @@ const Login = () => {
   const [password, setPassword] = React.useState('');
   const history = useHistory();
 
-  const handleLogin = () => {
-    // Implement your login logic here
-    console.log('Login button pressed with email:', email, 'and password:', password);
-    // Add your login API call or authentication logic
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/users/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        // Login successful
+        console.log('Login successful');
+
+
+
+        // Redirect or perform other actions after successful login
+        // For example, you can redirect to the home page:
+        history.push('/');
+      } else {
+        // Handle login error, display error message, etc.
+        console.error('Login failed');
+      }
+      // Clear input fields
+      setEmail('');
+      setPassword('');
+    } catch (error) {
+      console.error('Error during login:', error);
+    }
   };
 
   const handleCreateAccount = () => {
-    // Redirect to the account creation page
     history.push('/account-creation');
   };
 
