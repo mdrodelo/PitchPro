@@ -7,22 +7,40 @@ const AccountCreation = ({ history }) => {
   const [newEmail, setNewEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
 
-  const handleCreateAccount = () => {
-    // Implement your account creation logic here
-    console.log(
-      'Create account button pressed with first name:',
-      firstName,
-      'last name:',
-      lastName,
-      'email:',
-      newEmail,
-      'and password:',
-      newPassword
-    );
-    // Add your account creation API call or authentication logic
+  const handleCreateAccount = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/users/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+          email: newEmail,
+          password: newPassword,
+        }),
+      });
 
-    // Redirect to the login page after account creation
-    history.push('/login');
+      if (response.ok) {
+        // Account creation successful
+        console.log('Account creation successful');
+
+        // Redirect to the login page
+        history.push('/login');
+      } else {
+        // Handle account creation error, display error message, etc.
+        console.error('Account creation failed');
+      }
+
+      // Clear input fields regardless of success or failure
+      setFirstName('');
+      setLastName('');
+      setNewEmail('');
+      setNewPassword('');
+    } catch (error) {
+      console.error('Error during account creation:', error);
+    }
   };
 
   return (
