@@ -37,7 +37,6 @@ def parse_gpx_data(gpxFile):
     total_distance = None
     average_speed = None
 
-
     for track in gpx.tracks:
         for segment in track.segments:
             for point in segment.points:
@@ -64,7 +63,7 @@ def parse_gpx_data(gpxFile):
         if avgspeed_elem is not None:
             average_speed = float(avgspeed_elem.text)
 
-    df=pd.DataFrame(data_points)
+    df = pd.DataFrame(data_points)
 
     return data_points, average_speed, total_distance, df
 
@@ -79,22 +78,47 @@ def parseExtensions(extensions):
             extensionDictionary['Heart Rate'] = node.text
     return extensionDictionary
 
+
 gpx_file_path = '../sample_data/data1.gpx'
 dataPoints, averageSpeed, distance, df = parse_gpx_data(gpx_file_path)
 
-print(f"Data Points: {dataPoints}")
-print(f"Average Speed: {averageSpeed} m/s")  # Assuming the speed is in meters per second
-print(f"Distance: {distance} meters")  # Assuming the distance is in meters
+##print(f"Data Points: {dataPoints}")
+##print(f"Average Speed: {averageSpeed} m/s")  # Assuming the speed is in meters per second
+##print(f"Distance: {distance} meters")  # Assuming the distance is in meters
 
 print(df)
+print('hi')
+df1 = df
+print(df1)
+
+def lat_lon_adjust(df):
+    latmin = df['Latitude'].min()
+    ##print(latmin)
+    lonmin = df['Longitude'].min()
+    ##print(lonmin)
+    latscalar = latmin*100
+    ##print(latscalar/-1)
+    lonscalar = lonmin*100
+    if (latscalar / -1) > 0:
+        latscalar = latscalar / -1
+
+    if (lonscalar / -1) > 0:
+        lonscalar = lonscalar / -1
+    ##print(latscalar)
+    for index, row in df.iterrows():
+
+        df.at[index,'Latitude'] = df.at[index,'Latitude']-latmin
+        df.at[index,'Longitude'] = df.at[index,'Longitude']-lonmin
 
 
+        df.at[index,'Latitude'] = df.at[index,'Latitude']*(latscalar)
+        df.at[index,'Longitude'] = df.at[index,'Longitude']*(lonscalar)
+
+    return df
 
 
-
-
-
-
+lat_lon_adjust(df1)
+print(df1)
 # looping through the df and for each row, creating a new PlayerMovement instance with the data from that row
 player_movements = [
     PlayerMovement(
@@ -108,11 +132,13 @@ player_movements = [
 ]
 
 # using Django's 'bulk_create' to insert data efficiently
-with transaction.atomic():     # using a transaction to ensure data integrity
+with transaction.atomic():  # using a transaction to ensure data integrity
     PlayerMovement.objects.bulk_create(player_movements)
-
 
 
 # # printing the database to make sure the data went thru
 # movements = PlayerMovement.objects.all() # add '[:10]' at the end of this line to just see the first 10 entries
 # print(movements)
+
+
+
