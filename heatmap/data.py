@@ -5,12 +5,16 @@ pip install gpxpy
 or if you are using python3.xx (you can find out by typing "python --version" in the command line), use the command:
 pip3 install gpxpy
 """
+
+import math
+import utm as utm
 import os
 import django
 import gpxpy
 import gpxpy.gpx
 import xml.etree.ElementTree as ET
 import pandas as pd
+
 
 # Set up the Django environment
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'PitchPro.settings')
@@ -87,32 +91,40 @@ dataPoints, averageSpeed, distance, df = parse_gpx_data(gpx_file_path)
 ##print(f"Distance: {distance} meters")  # Assuming the distance is in meters
 
 print(df)
-print('hi')
+
 df1 = df
 print(df1)
 
 def lat_lon_adjust(df):
-    latmin = df['Latitude'].min()
-    ##print(latmin)
-    lonmin = df['Longitude'].min()
-    ##print(lonmin)
-    latscalar = latmin*100
-    ##print(latscalar/-1)
-    lonscalar = lonmin*100
-    if (latscalar / -1) > 0:
-        latscalar = latscalar / -1
 
-    if (lonscalar / -1) > 0:
-        lonscalar = lonscalar / -1
-    ##print(latscalar)
+
     for index, row in df.iterrows():
 
-        df.at[index,'Latitude'] = df.at[index,'Latitude']-latmin
-        df.at[index,'Longitude'] = df.at[index,'Longitude']-lonmin
 
 
-        df.at[index,'Latitude'] = df.at[index,'Latitude']*(latscalar)
-        df.at[index,'Longitude'] = df.at[index,'Longitude']*(lonscalar)
+            lat, lon,zone,character = utm.from_latlon(df.at[index, 'Latitude'],df.at[index, 'Longitude'])
+            df.at[index, 'Latitude']=lat
+            df.at[index, 'Longitude']=lon
+
+    latmin = df['Latitude'].min()
+    latmax = df['Latitude'].max()
+
+    lonmin = df['Longitude'].min()
+    lonmax = df['Longitude'].max()
+
+    for index, row in df.iterrows():
+        df.at[index, 'Latitude'] =  df.at[index, 'Latitude']-latmin
+        df.at[index, 'Longitude'] = df.at[index, 'Longitude']-lonmin
+
+    latmin2 = df['Latitude'].min()
+
+    latmax2 = df['Latitude'].max()
+
+    lonmin2 = df['Longitude'].min()
+    lonmax2 = df['Longitude'].max()
+
+    for index, row in df.iterrows():
+        print(df.at[index, 'Latitude'],df.at[index, 'Longitude'])
 
     return df
 
